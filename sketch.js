@@ -15,6 +15,7 @@ let bounceEfficiency = 0.8;
 let isGrabbed = false;
 let bounceSound;
 let soundReady = false;
+let audioInitialized = false;
 
 
 //This function get run once at the start of the program
@@ -33,6 +34,14 @@ function setup() {
             console.log('Error loading sound:', err);
         }
     );
+}
+
+// Initialize audio on first user interaction
+function initAudio() {
+    if (!audioInitialized) {
+        getAudioContext().resume();
+        audioInitialized = true;
+    }
 }
 
 function drawBall() {
@@ -107,6 +116,7 @@ function mousePressed() {
     if (distance < 25) {
         isGrabbed = true;
         // Unlock audio on first click
+        initAudio();
         userStartAudio();
     }
 }
