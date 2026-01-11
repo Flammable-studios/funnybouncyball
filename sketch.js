@@ -14,6 +14,7 @@ let mass = 1;
 let bounceEfficiency = 0.8;
 let isGrabbed = false;
 let bounceSound;
+let soundReady = false;
 
 
 //This function get run once at the start of the program
@@ -23,7 +24,15 @@ function setup() {
     rectMode(CORNER);
     ellipseMode(CENTER);
     frameRate(60);
-    bounceSound = createAudio('sm64_mario_boing.mp3');
+    bounceSound = loadSound('sm64_mario_boing.mp3', 
+        function() {
+            soundReady = true;
+            console.log('Sound loaded!');
+        },
+        function(err) {
+            console.log('Error loading sound:', err);
+        }
+    );
 }
 
 function drawBall() {
@@ -36,39 +45,47 @@ function drawBall() {
         VY += gravity;
         VY *= airResistance;
         VX *= airResistance;
-        
+
         // Then handle bounces with efficiency
         bounceEfficiency = constrain(bounceEfficiency, 0, 1);
         if (Y >= height - 25) {
             VY = -VY * bounceEfficiency;
             Y = height - 25; // Prevent sinking into the ground
-            bounceSound.stop();
-            bounceSound.play();
+            if (soundReady) {
+                bounceSound.stop();
+                bounceSound.play();
+            }
         }
         if (Y <= 25) {
             VY = -VY * bounceEfficiency;
             Y = 25;
-            bounceSound.stop();
-            bounceSound.play();
+            if (soundReady) {
+                bounceSound.stop();
+                bounceSound.play();
+            }
         }
         if (X >= width - 25) {
             VX = -VX * bounceEfficiency;
             X = width - 25;
-            bounceSound.stop();
-            bounceSound.play();
+            if (soundReady) {
+                bounceSound.stop();
+                bounceSound.play();
+            }
         }
         if (X <= 25) {
             VX = -VX * bounceEfficiency;
             X = 25;
-            bounceSound.stop();
-            bounceSound.play();
+            if (soundReady) {
+                bounceSound.stop();
+                bounceSound.play();
+            }
         }
     } else {
         // When grabbed, follow the mouse
         X = mouseX;
         Y = mouseY;
     }
-    
+
     mass = map(bounceEfficiency, 0, 1, 5, 1);
 
     trail.push({ x: X, y: Y });
@@ -89,6 +106,8 @@ function mousePressed() {
     let distance = dist(mouseX, mouseY, X, Y);
     if (distance < 25) {
         isGrabbed = true;
+        // Unlock audio on first click
+        userStartAudio();
     }
 }
 
