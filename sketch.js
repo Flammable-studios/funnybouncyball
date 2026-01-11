@@ -10,7 +10,6 @@ let VY = 5;
 let gravity = 0.2;
 let airResistance = 0.999;
 let trail = [];
-let mass = 1;
 let bounceEfficiency = 0.8;
 let isGrabbed = false;
 let bounceSound;
@@ -25,12 +24,12 @@ function setup() {
     rectMode(CORNER);
     ellipseMode(CENTER);
     frameRate(60);
-    bounceSound = loadSound('sm64_mario_boing.mp3', 
-        function() {
+    bounceSound = loadSound('sm64_mario_boing.mp3',
+        function () {
             soundReady = true;
             console.log('Sound loaded!');
         },
-        function(err) {
+        function (err) {
             console.log('Error loading sound:', err);
         }
     );
@@ -94,8 +93,6 @@ function drawBall() {
         X = mouseX;
         Y = mouseY;
     }
-
-    mass = map(bounceEfficiency, 0, 1, 5, 1);
 
     trail.push({ x: X, y: Y });
     if (trail.length > 100) {
